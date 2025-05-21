@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Mapa de Imágenes - PEDRIIXD</title>
+  <style>
+    :root {
+      --primary: #4ecdc4;
+      --primary-dark: #3ab0a8;
+      --secondary: #a6e4d0;
+      --white: #ffffff;
+      --dark: #333333;
+      --light-gray: #f5f5f5;
+      --border-radius: 8px;
+      --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background-color: var(--light-gray);
+      padding: 20px;
+    }
+    
+    h1, h2, h3 {
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--white);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .dropzone {
+      border: 2px dashed var(--primary);
+      border-radius: var(--border-radius);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+    
+    .dropzone.active {
+      background-color: rgba(78, 205, 196, 0.1);
+    }
+    
+    #file-input {
+      display: none;
+    }
+    
+    .dropzone p {
+      margin-bottom: 0.5rem;
+    }
+    
+    .instructions {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+    }
+    
+    .instructions h3 {
+      margin-bottom: 0.5rem;
+    }
+    
+    .instructions ol, .instructions ul {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .instructions li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .button {
+      display: inline-block;
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .button-secondary {
+      background-color: var(--secondary);
+      color: var(--dark);
+    }
+    
+    .button-secondary:hover {
+      background-color: #8fd3bb;
+    }
+    
+    .progress-container {
+      display: none;
+      margin: 1.5rem 0;
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background-color: #eee;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .status {
+      display: none;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+    }
+    
+    .status.success {
+      background-color: #e8f5e9;
+      border-left: 4px solid #4CAF50;
+    }
+    
+    .status.error {
+      background-color: #ffebee;
+      border-left: 4px solid #FF5252;
+    }
+    
+    .result-container {
+      margin-top: 2rem;
+      display: none;
+    }
+    
+    #result-editor {
+      width: 100%;
+      height: 300px;
+      font-family: monospace;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      resize: vertical;
+    }
+    
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    
+    .file-list {
+      margin-top: 1rem;
+      border: 1px solid #eee;
+      border-radius: var(--border-radius);
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      display: none;
+    }
+    
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+      font-size: 0.875rem;
+    }
+    
+    .file-item:last-child {
+      border-bottom: none;
+    }
+    
+    .file-category {
+      background-color: rgba(78, 205, 196, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    
+    .file-status {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    
+    .file-status.included {
+      color: #4CAF50;
+    }
+    
+    .file-status.excluded {
+      color: #FF5252;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Generador de Mapa de Imágenes</h1>
+      <p>Esta herramienta generará un archivo JavaScript con todas las imágenes de tus carpetas para la aplicación PEDRIIXD Stickers.</p>
+    </div>
+    
+    <div class="instructions">
+      <h3>Instrucciones:</h3>
+      <ol>
+        <li>Organiza tus imágenes en carpetas por categoría (mates, computadoras, personajes, etc.)</li>
+        <li>Selecciona todas esas carpetas o arrastra y suelta todas tus imágenes en el área indicada abajo</li>
+        <li>Haz clic en "Generar Mapa" para crear el archivo imageMap.js</li>
+        <li>Descarga el archivo generado y guárdalo en la misma carpeta que index.html</li>
+      </ol>
+      <p><strong>Nota:</strong> Este proceso se ejecuta localmente en tu navegador. Ninguna imagen se sube a Internet.</p>
+    </div>
+    
+    <div class="dropzone" id="dropzone">
+      <p><strong>Arrastra y suelta tus carpetas o imágenes aquí</strong></p>
+      <p>o</p>
+      <button class="button" id="select-files">Seleccionar Archivos</button>
+      <input type="file" id="file-input" webkitdirectory directory multiple accept="image/*" />
+    </div>
+    
+    <div class="file-list" id="file-list">
+      <!-- La lista de archivos se llenará dinámicamente -->
+    </div>
+    
+    <div class="progress-container" id="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div id="progress-text">Procesando... 0%</div>
+    </div>
+    
+    <div class="status" id="status"></div>
+    
+    <div class="actions">
+      <button class="button" id="generate-btn">Generar Mapa</button>
+      <button class="button button-secondary" id="clear-btn">Limpiar Todo</button>
+    </div>
+    
+    <div class="result-container" id="result-container">
+      <h3>Mapa Generado:</h3>
+      <textarea id="result-editor" readonly></textarea>
+      <div class="actions">
+        <button class="button" id="download-btn">Descargar imageMap.js</button>
+        <button class="button button-secondary" id="copy-btn">Copiar al Portapapeles</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Variables globales
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('file-input');
+      const selectFilesBtn = document.getElementById('select-files');
+      const generateBtn = document.getElementById('generate-btn');
+      const clearBtn = document.getElementById('clear-btn');
+      const downloadBtn = document.getElementById('download-btn');
+      const copyBtn = document.getElementById('copy-btn');
+      const progressContainer = document.getElementById('progress-container');
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+      const statusEl = document.getElementById('status');
+      const resultContainer = document.getElementById('result-container');
+      const resultEditor = document.getElementById('result-editor');
+      const fileListEl = document.getElementById('file-list');
+      
+      let imageFiles = [];
+      const validExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
+      const maxFileSize = 1024 * 1024; // 1MB
+      
+      // Evento para seleccionar archivos con el botón
+      selectFilesBtn.addEventListener('click', function() {
+        fileInput.click();
+      });
+      
+      // Evento cuando se seleccionan archivos con el input
+      fileInput.addEventListener('change', function(e) {
+        handleFiles(e.target.files);
+      });
+      
+      // Eventos para arrastrar y soltar
+      dropzone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropzone.classList.add('active');
+      });
+      
+      dropzone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropzone.classList.remove('active');
+      });
+      
+      dropzone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropzone.classList.remove('active');
+        
+        // Obtener todos los archivos, incluyendo los de carpetas
+        const items = e.dataTransfer.items;
+        getFilesFromDataTransferItems(items)
+          .then(files => {
+            handleFiles(files);
+          })
+          .catch(error => {
+            showStatus('Error al obtener archivos: ' + error.message, 'error');
+          });
+      });
+      
+      // Función para obtener archivos de manera recursiva
+      async function getFilesFromDataTransferItems(dataTransferItems) {
+        const files = [];
+        
+        async function traverseFileTree(item, path = '') {
+          return new Promise(resolve => {
+            if (item.isFile) {
+              item.file(file => {
+                // Agregar ruta relativa
+                file.relativePath = path + file.name;
+                files.push(file);
+                resolve();
+              });
+            } else if (item.isDirectory) {
+              const dirReader = item.createReader();
+              const folderPath = path + item.name + '/';
+              
+              dirReader.readEntries(entries => {
+                const promises = [];
+                for (let i = 0; i < entries.length; i++) {
+                  promises.push(traverseFileTree(entries[i], folderPath));
+                }
+                Promise.all(promises).then(() => resolve());
+              });
+            } else {
+              resolve();
+            }
+          });
+        }
+        
+        const promises = [];
+        for (let i = 0; i < dataTransferItems.length; i++) {
+          const item = dataTransferItems[i].webkitGetAsEntry();
+          if (item) {
+            promises.push(traverseFileTree(item));
+          }
+        }
+        
+        await Promise.all(promises);
+        return files;
+      }
+      
+      // Procesar archivos seleccionados
+      function handleFiles(files) {
+        if (!files || files.length === 0) return;
+        
+        imageFiles = [];
+        fileListEl.innerHTML = '';
+        
+        // Filtrar solo archivos de imagen válidos
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const extension = '.' + file.name.split('.').pop().toLowerCase();
+          
+          // Verificar si es una imagen válida y su tamaño
+          if (validExtensions.includes(extension)) {
+            // Determinar la categoría en base a la ruta
+            let category = 'general';
+            
+            if (file.relativePath) {
+              const pathParts = file.relativePath.split('/');
+              if (pathParts.length > 1) {
+                category = pathParts[0];
+              }
+            } else if (file.webkitRelativePath) {
+              const pathParts = file.webkitRelativePath.split('/');
+              if (pathParts.length > 1) {
+                category = pathParts[0];
+              }
+            }
+            
+            const isValid = file.size <= maxFileSize;
+            
+            // Agregar a la lista de archivos
+            imageFiles.push({
+              file: file,
+              extension: extension,
+              category: category,
+              isValid: isValid,
+              path: file.relativePath || file.webkitRelativePath || file.name
+            });
+            
+            // Agregar a la lista visual
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+              <div>
+                <span>${file.name}</span>
+                <span class="file-category">${category}</span>
+              </div>
+              <span class="file-status ${isValid ? 'included' : 'excluded'}">
+                ${isValid ? 'Incluido' : 'Excluido (tamaño > 1MB)'}
+              </span>
+            `;
+            fileListEl.appendChild(fileItem);
+          }
+        }
+        
+        // Mostrar la lista de archivos
+        if (imageFiles.length > 0) {
+          fileListEl.style.display = 'block';
+          showStatus(`Se han encontrado ${imageFiles.length} imágenes válidas.`, 'success');
+        } else {
+          showStatus('No se encontraron imágenes válidas. Asegúrate de seleccionar archivos con extensiones: ' + validExtensions.join(', '), 'error');
+        }
+      }
+      
+      // Generar el mapa de imágenes
+      generateBtn.addEventListener('click', function() {
+        if (imageFiles.length === 0) {
+          showStatus('No hay imágenes seleccionadas. Por favor, selecciona algunas imágenes primero.', 'error');
+          return;
+        }
+        
+        progressContainer.style.display = 'block';
+        statusEl.style.display = 'none';
+        
+        // Filtrar solo archivos válidos
+        const validFiles = imageFiles.filter(file => file.isValid);
+        
+        // Iniciar proceso de generación
+        generateImageMap(validFiles);
+      });
+      
+      // Función para generar el mapa de imágenes
+      async function generateImageMap(files) {
+        // Ordenar por categoría para mejor organización
+        files.sort((a, b) => a.category.localeCompare(b.category));
+        
+        // Iniciar construcción del contenido
+        let content = `/**
+ * ARCHIVO DE MAPA DE IMÁGENES (GENERADO AUTOMÁTICAMENTE)
+ * 
+ * Generado el: ${new Date().toLocaleString()}
+ * Total de imágenes: ${files.length}
+ * 
+ * NO MODIFICAR MANUALMENTE - Use generador-web.html para actualizar
+ */
+
+// Mapa global de imágenes que será utilizado por el script principal
+window.imageMap = [\n`;
+        
+        let lastCategory = '';
+        
+        // Procesar cada archivo
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          // Actualizar progreso
+          const progress = Math.round((i / files.length) * 100);
+          progressFill.style.width = progress + '%';
+          progressText.textContent = `Procesando... ${progress}%`;
+          
+          // Añadir comentario de separación por categoría
+          if (file.category !== lastCategory) {
+            content += `  // CATEGORÍA: ${file.category.toUpperCase()}\n`;
+            content += `  // ${'-'.repeat(file.category.length + 10)}\n`;
+            lastCategory = file.category;
+          }
+          
+          // Crear entrada para la imagen
+          content += `  { 
+    id: '${generateId(file.path)}',
+    src: '${file.path}',
+    category: '${file.category}'
+  }`;
+          
+          // Añadir coma si no es el último elemento
+          if (i < files.length - 1) {
+            content += ',\n';
+          } else {
+            content += '\n';
+          }
+          
+          // Pequeña pausa para no bloquear la interfaz
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+        
+        // Cerrar el array y añadir funciones adicionales
+        content += `];
+
+// Función para obtener categorías disponibles
+window.getCategories = function() {
+  const categories = new Set();
+  window.imageMap.forEach(img => {
+    if (img.category) {
+      categories.add(img.category);
+    }
+  });
+  return Array.from(categories);
+};
+
+// Mensaje de consola para confirmar carga
+console.log('[ImageMap] Cargado con éxito: ' + window.imageMap.length + ' imágenes disponibles');`;
+        
+        // Mostrar resultado
+        resultEditor.value = content;
+        resultContainer.style.display = 'block';
+        progressContainer.style.display = 'none';
+        showStatus(`¡Mapa generado correctamente con ${files.length} imágenes!`, 'success');
+        
+        // Hacer scroll al resultado
+        resultContainer.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      // Función para generar un ID único basado en la ruta
+      function generateId(path) {
+        return 'img_' + path
+          .replace(/[^a-z0-9]/gi, '_')
+          .toLowerCase()
+          .substring(0, 30);
+      }
+      
+      // Botón para descargar el archivo
+      downloadBtn.addEventListener('click', function() {
+        if (!resultEditor.value) return;
+        
+        const blob = new Blob([resultEditor.value], { type: 'text/javascript' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'imageMap.js';
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(function() {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 0);
+      });
+      
+      // Botón para copiar al portapapeles
+      copyBtn.addEventListener('click', function() {
+        resultEditor.select();
+        document.execCommand('copy');
+        
+        showStatus('¡Contenido copiado al portapapeles!', 'success');
+        setTimeout(() => {
+          statusEl.style.display = 'none';
+        }, 2000);
+      });
+      
+      // Botón para limpiar todo
+      clearBtn.addEventListener('click', function() {
+        imageFiles = [];
+        fileInput.value = '';
+        resultContainer.style.display = 'none';
+        progressContainer.style.display = 'none';
+        statusEl.style.display = 'none';
+        fileListEl.style.display = 'none';
+        fileListEl.innerHTML = '';
+      });
+      
+      // Función para mostrar mensajes de estado
+      function showStatus(message, type) {
+        statusEl.textContent = message;
+        statusEl.className = 'status ' + type;
+        statusEl.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
