@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80" viewBox="0 0 200 80">
+  <style>
+    .text { font-family: 'Arial', sans-serif; font-weight: bold; }
+    .main-text { font-size: 24px; fill: #333; }
+    .sub-text { font-size: 14px; fill: #4ecdc4; }
+  </style>
+  <rect width="200" height="80" rx="10" fill="#ffffff"/>
+  <text x="50%" y="40%" text-anchor="middle" class="text main-text">PEDRIIXD</text>
+  <text x="50%" y="65%" text-anchor="middle" class="text sub-text">Stickers Personalizados</text>
+</svg>
