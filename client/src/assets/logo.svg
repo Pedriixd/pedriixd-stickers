@@ -1,0 +1,7 @@
+<svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="40" font-family="Poppins, sans-serif" font-weight="700" font-size="28" fill="#4ecdc4">PEDRIIXD</text>
+  <text x="140" y="40" font-family="Poppins, sans-serif" font-weight="500" font-size="14" fill="#333333">Stickers</text>
+  <path d="M5,50 H195" stroke="#c1f880" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="180" cy="20" r="15" fill="#a6e4d0"/>
+  <path d="M175,20 L185,20 M180,15 L180,25" stroke="#4ecdc4" stroke-width="2" stroke-linecap="round"/>
+</svg>

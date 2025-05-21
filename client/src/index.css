@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 174 72% 56%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 162 55% 77%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 84 71% 72%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 174 72% 56%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 162 55% 77%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 84 71% 72%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Custom styles for sticker app */
+
+/* Font families */
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom shadows */
+.shadow-custom {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-custom-hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom background pattern for canvas */
+.bg-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f0f0f0' fill-opacity='0.5' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3Ccircle cx='13' cy='13' r='1'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Tailwind custom color utilities */
+.bg-primary {
+  background-color: hsl(var(--primary));
+}
+
+.bg-primary-light {
+  background-color: #65d6cf;
+}
+
+.bg-primary-dark {
+  background-color: #3ab0a8;
+}
+
+.bg-secondary {
+  background-color: hsl(var(--secondary));
+}
+
+.bg-accent {
+  background-color: hsl(var(--accent));
+}
+
+.bg-neutral-light {
+  background-color: #f5f5f5;
+}
+
+.bg-neutral-dark {
+  background-color: #333333;
+}
+
+.text-primary {
+  color: hsl(var(--primary));
+}
+
+.text-neutral-dark {
+  color: #333333;
+}
+
+.text-neutral-light {
+  color: #f5f5f5;
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: #3ab0a8;
+}
+
+.border-primary {
+  border-color: hsl(var(--primary));
+}
+
+/* Section transitions */
+.section-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.section-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
